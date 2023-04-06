@@ -5,6 +5,7 @@ import random
 class Cartes:
 
     paquet = []
+    verbose = False
 
     def __init__(self):
         self.paquet = [n for n in range(1, 55)]
@@ -23,6 +24,9 @@ class Cartes:
 
     def __ne__(self, other):
         return self.paquet != other.paquet
+    
+    def setVerbose(self,verbose):
+        self.verbose = verbose
 
     def melanger(self, seed=0):
         if (seed != 0):
@@ -56,20 +60,20 @@ class Cartes:
         elif num % 13 == Tetes.AS.value:
             card += "A"
         elif num % 13 == Tetes.DAME.value:
-            card += "V"
-        elif num % 13 == Tetes.VALET.value:
             card += "D"
+        elif num % 13 == Tetes.VALET.value:
+            card += "V"
         else:
             card += str(num % 13)
 
         # Symbole de la carte
-        if num//13 == Symboles.PIQUE.value:
+        if (num-1)//13 == Symboles.PIQUE.value:
             card += "♠"
-        elif num//13 == Symboles.TREFLE.value:
+        elif (num-1)//13 == Symboles.TREFLE.value:
             card += "♣"
-        elif num//13 == Symboles.COEUR.value:
+        elif (num-1)//13 == Symboles.COEUR.value:
             card += "♥"
-        elif num//13 == Symboles.CARREAU.value:
+        elif (num-1)//13 == Symboles.CARREAU.value:
             card += "♦"
 
         return card
@@ -104,21 +108,30 @@ class Cartes:
 
     # Génère un caractère de la clé de chiffrement à partir du paquet de cartes.
     def nextKey(self):
+        if self.verbose : print("----------- GENERATION CARACTERE DE LA CLEF")
         while True:
             # Recul du joker noir d'une position
             self.deplacer(Joker.NOIR.value, 1)
             # Recul du joker rouge de deux positions
             self.deplacer(Joker.ROUGE.value, 2)
+            if self.verbose : print("| Recul des jokers : " + str(self))
             # Double coupe autour des deux jokers
             self.double_coupe(Joker.NOIR.value, Joker.ROUGE.value)
+            if self.verbose : print("| Double coupe autour des jokers : " + str(self))
             # Coupe du paquet déterminée par la dernière carte du paquet
             self.coupe()
+            if self.verbose : print("| Coupe en fonction de la dernière carte : " + str(self))
             # Lecture de la carte à la position donnée par la valeur de la première carte du paquet.
             # Si la carte est un joker, on recommence.
             # Valeur modulo 26 pour obtenir un caractère de l'alphabet en majuscule.
-            carte = self.paquet[self.paquet[0]-1]
-            if carte != Joker.NOIR.value and carte != Joker.ROUGE.value:
-                return chr((carte % 26) + 65)
+            pioche = self.paquet[0]-1
+            carte = self.paquet[pioche]
+            if pioche != Joker.NOIR.value and carte != Joker.ROUGE.value:
+                lettre = chr((carte % 26) + 65)
+                if self.verbose : print("| La valeur de la première carte correspond à la lettre [" + lettre + "]")
+                return lettre
+            else:
+                if self.verbose : print("---- La première carte est un Joker. Nouvel essai ")
 
     def nextKeyStream(self, length):
         keyStream = ""
