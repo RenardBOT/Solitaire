@@ -2,8 +2,6 @@
 from Cartes import Cartes
 import re
 
-# Implémentation de l'algorithme de chiffrement Solitaire
-
 
 def chiffrer(message, key):
     message = nettoyerMessage(message)

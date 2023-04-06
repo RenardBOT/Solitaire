@@ -10,7 +10,7 @@ class Cartes:
     def __init__(self):
         self.paquet = [n for n in range(1, 55)]
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return str(self.paquet)
 
     def __str__(self) -> str:
@@ -33,16 +33,19 @@ class Cartes:
             random.seed(seed)
         random.shuffle(self.paquet)
 
+    def set(self,paquet):
+        paquetTest = sorted(paquet)
+        if paquetTest != [n for n in range(1,55)]:
+            raise InvalidDeck
+        self.paquet = paquet
+        
+
+    # exemple paquet : 54 2 1 53 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 3
+
     @staticmethod
     def eval(strPaquet):
         paquet = [int(carte) for carte in strPaquet.split(" ") if carte != ""]
-        paquetTest = sorted(paquet)
-        if paquetTest == [n for n in range(1, 55)]:
-            cartes = Cartes()
-            cartes.paquet = paquet
-            return cartes
-        else:
-            return []
+        return paquet
 
     @staticmethod
     def num2card(num):
@@ -159,3 +162,15 @@ class Tetes(Enum):
     AS = 1
     VALET = 11
     DAME = 12
+
+class InvalidDeck(Exception):
+    """Exception raised for errors in the input salary.
+
+    Attributes:
+        message -- explanation of the error
+    """
+    #"ERREUR : Le paquet doit être un arrangement de chaque nombre compris entre 1 et 54"
+    def __init__(self, message="Le paquet doit être un arrangement de chaque nombre compris entre 1 et 54"):
+        self.message = message
+        super().__init__(self.message)
+    pass
