@@ -26,3 +26,5 @@ def nettoyerMessage(message):
     message = message.upper()
     message = re.sub(r'[^A-Z]', '', message)
     return message
+
+
